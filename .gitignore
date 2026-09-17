@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+*.local.md
+.vercel/
+__pycache__/

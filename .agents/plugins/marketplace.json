@@ -1,0 +1,20 @@
+{
+  "name": "interactive-slide",
+  "interface": {
+    "displayName": "Interactive Slide"
+  },
+  "plugins": [
+    {
+      "name": "interactive-slide",
+      "source": {
+        "source": "local",
+        "path": "./plugins/interactive-slide"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

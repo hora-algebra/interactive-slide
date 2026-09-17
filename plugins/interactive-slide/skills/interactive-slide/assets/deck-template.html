@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DECK_TITLE</title>
+<!--
+  interactive-slide template. Single file, no network, works offline.
+  Replace DECK_TITLE, the two accent tokens (--a / --b and their semantic aliases),
+  and the <section class="slide"> blocks. Keep the machinery below the slides intact.
+-->
+<style>
+:root{
+  color-scheme:light dark;
+  /* Paper and ink. */
+  --bg:#fbfaf7;--fg:#22252b;--muted:#6b7079;--line:#d9d6ce;--panel:#f1efe9;
+  /* Exactly two accent colors. Give them SEMANTIC aliases per deck (e.g. --play / --analyze)
+     and use only those aliases in slides, formulas and figures. */
+  --a:#1f5bb5;--a-soft:#e1eaf8;   /* blue   */
+  --b:#c86a28;--b-soft:#fbe9dc;   /* orange */
+  /* Stage unit: the 16:9 stage that fits the screen has width 100u0 and height 56.25u0.
+     Write sizes as multiples of --u (= --u0 × per-slide --fit) so every screen is filled. */
+  --u0:min(1vw,1.7778vh);--u0:min(1vw,1.7778svh);--fit:1;--u:calc(var(--u0)*var(--fit));
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Hiragino Sans","Yu Gothic",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#15171b;--fg:#e9e8e3;--muted:#a3a7ae;--line:#3b3f47;--panel:#20242b;
+        --a:#7fa8ec;--a-soft:#1d2c45;--b:#f0a068;--b-soft:#3f2818}
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--fg)}
+body{font-family:var(--sans);line-height:1.55;font-size:max(1rem,calc(var(--u0)*2.1));-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+a{color:inherit;text-decoration-thickness:.06em;text-underline-offset:.18em}
+:focus-visible{outline:.15em solid var(--fg);outline-offset:.2em}
+
+/* ---- deck & slides ---- */
+.deck{position:relative;width:100%;height:100vh;height:100dvh}
+.slide{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;touch-action:pan-y;--u:calc(var(--u0)*var(--fit));font-size:max(1rem,calc(var(--u)*2.1))}
+.slide[hidden]{display:none}
+.slide-inner{width:min(100%,calc(var(--u0)*120));min-height:100%;margin:0 auto;
+  padding:max(2.6rem,calc(var(--u0)*4.2)) max(1.35rem,calc(var(--u0)*3)) max(2rem,calc(var(--u0)*3 + env(safe-area-inset-bottom)));
+  display:flex;flex-direction:column;justify-content:center;gap:max(.5rem,calc(var(--u)*1.2))}
+.slide-inner.top{justify-content:flex-start}
+.eyebrow{margin:0;font-size:max(.78rem,calc(var(--u)*1.5));letter-spacing:.06em;color:var(--muted)}
+h1{margin:0;font-size:max(2rem,calc(var(--u)*6));line-height:1.2;font-weight:700;text-wrap:balance}
+h2{margin:0;font-size:max(1.4rem,calc(var(--u)*4.2));line-height:1.3;font-weight:700;text-wrap:balance}
+h3{margin:0;font-size:max(1rem,calc(var(--u)*2.5));font-weight:650}
+p{margin:0;text-wrap:pretty}
+.w{display:inline-block;white-space:nowrap;max-width:100%}   /* wrap-control span for headings */
+.muted{color:var(--muted)}
+.small{font-size:max(.85rem,calc(var(--u)*1.7))}
+.big{font-size:max(1.2rem,calc(var(--u)*2.8))}
+.center{text-align:center}
+.a{color:var(--a);font-weight:650}.b{color:var(--b);font-weight:650}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:max(1rem,calc(var(--u)*3));align-items:center;min-width:0}
+.cols>*{min-width:0}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--panel);border-radius:max(.3rem,calc(var(--u)*.6));padding:max(.8rem,calc(var(--u)*1.5)) max(1rem,calc(var(--u)*1.8))}
+.block{border-left:.22em solid var(--a);padding:.1em 0 .1em .9em}
+.block.b{border-color:var(--b)}
+.block .bt{font-weight:700;margin-bottom:.15em}
+ul,ol{margin:0;padding-left:1.3em}li{margin:.15em 0}
+.formula{display:flex;justify-content:center;align-items:center;max-width:100%;font-size:max(1rem,calc(var(--u)*2.6))}
+.math{display:inline-flex;align-items:center;max-width:100%;vertical-align:middle;line-height:1.2}
+.math svg{max-width:100%;height:auto;overflow:visible}
+.fig{width:100%;max-width:calc(var(--u)*96);margin:0 auto}
+.fig svg{width:100%;height:auto;max-height:calc(var(--u)*36);display:block}
+.fig img{width:100%;height:auto;display:block}
+.cover .slide-inner{align-items:flex-start}
+.conclusion{font-size:max(1.1rem,calc(var(--u)*2.8));font-weight:600;text-align:center;text-wrap:balance}
+/* Optional two-step reveal (question → answer). Use sparingly. */
+.slide[data-steps][data-step="1"] .s2{visibility:hidden}
+
+/* ---- navigation: top dots (one dot per slide, grouped by section) + place label ---- */
+.dots{position:fixed;z-index:30;top:0;left:0;right:0;display:flex;align-items:center;gap:max(.2rem,calc(var(--u0)*.5));
+  padding:max(.45rem,calc(var(--u0)*.9)) max(.9rem,calc(var(--u0)*2)) 0;pointer-events:none}
+.dots .place{font-size:max(.68rem,calc(var(--u0)*1.25));color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38%;pointer-events:auto}
+.dots .row{display:flex;align-items:center;gap:max(.55rem,calc(var(--u0)*1.1));flex:1;justify-content:center;pointer-events:auto}
+.dots .group{display:flex;gap:max(.18rem,calc(var(--u0)*.36))}
+.dots a{display:block;width:max(.42rem,calc(var(--u0)*.8));height:max(.42rem,calc(var(--u0)*.8));border-radius:50%;background:var(--line);text-decoration:none;
+  transition:transform .15s ease,background .15s ease}
+.dots a:hover{transform:scale(1.4)}
+.dots a[aria-current="page"]{background:var(--fg);transform:scale(1.35)}
+.dots .count{white-space:nowrap;font-family:var(--mono);font-size:max(.68rem,calc(var(--u0)*1.25));color:var(--muted);font-variant-numeric:tabular-nums;pointer-events:auto}
+/* Invisible edge zones: click near the left/right edge to move. */
+.edge{position:fixed;z-index:20;top:0;bottom:0;width:max(20px,3vw);border:0;background:transparent;padding:0;cursor:pointer}
+.edge.prev{left:0}.edge.next{right:0}
+/* Optional QR (inline SVG). .qr on a slide, .qr-corner fixed on every slide. */
+.qr svg{width:clamp(72px,14vh,140px);height:auto;background:#fff;padding:4px;border:1px solid var(--line)}
+.qr-corner{position:fixed;z-index:25;right:max(.6rem,calc(var(--u0)*1.4));bottom:max(.6rem,calc(var(--u0)*1.2 + env(safe-area-inset-bottom)));text-align:center;font-size:.62rem;color:var(--muted)}
+.qr-corner svg{width:clamp(48px,8vh,84px)}
+@media(max-width:700px){.qr-corner{display:none}}
+@media(max-width:520px){.dots .place{display:none}}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  html,body{overflow:visible;height:auto}
+  .deck{height:auto}
+  .slide{position:static;overflow:visible;height:auto;page-break-after:always;break-after:page}
+  .slide[hidden]{display:block}
+  .slide-inner{min-height:0}
+  .dots,.edge,.qr-corner{display:none}
+}
+</style>
+</head>
+<body>
+<nav class="dots" aria-label="Slides"><span class="place"></span><span class="row"></span><span class="count"></span></nav>
+<div class="deck">
+
+<section class="slide cover" data-slide="0" data-id="title" data-section="Title">
+  <div class="slide-inner">
+    <p class="eyebrow">EVENT · DATE</p>
+    <h1><span class="w">DECK</span> <span class="w">TITLE</span></h1>
+    <p class="big muted">Subtitle with the <span class="a">first concept</span> and the <span class="b">second concept</span></p>
+    <p>Author · Affiliation</p>
+  </div>
+</section>
+
+<section class="slide" data-slide="1" data-id="dichotomy" data-section="Introduction" hidden>
+  <div class="slide-inner">
+    <h2>One slide, one point</h2>
+    <div class="cols">
+      <div class="panel"><h3 class="a">Concept A</h3><p>What the first accent color always means in this deck.</p></div>
+      <div class="panel"><h3 class="b">Concept B</h3><p>What the second accent color always means in this deck.</p></div>
+    </div>
+    <p class="conclusion">The audience should leave remembering this contrast.</p>
+  </div>
+</section>
+
+<section class="slide" data-slide="2" data-id="widget" data-section="Introduction" hidden>
+  <div class="slide-inner">
+    <h2>A playable figure</h2>
+    <div class="fig" data-widget="example">
+      <!-- Draw the figure as inline SVG. Keep the layout stable: reserve space for every state. -->
+      <svg viewBox="0 0 600 240" aria-label="example figure"><rect x="1" y="1" width="598" height="238" rx="8" fill="none" stroke="var(--line)"/><text x="300" y="128" text-anchor="middle" fill="var(--muted)">widget goes here</text></svg>
+    </div>
+    <p class="small muted center">Click the figure. Keys and swipes inside a widget never change the slide.</p>
+  </div>
+</section>
+
+</div>
+<button class="edge prev" type="button" tabindex="-1" aria-hidden="true"></button>
+<button class="edge next" type="button" tabindex="-1" aria-hidden="true"></button>
+
+<script>
+/* ---- deck machinery (vanilla, ~120 lines). Slides, dots, keys, swipe, hash, screen fit. ---- */
+const slides=[...document.querySelectorAll('.slide[data-slide]')];
+const LAST=slides.length-1;
+const idIndex={};slides.forEach((s,i)=>{if(s.dataset.id)idIndex[s.dataset.id]=i;});
+let current=0;
+const guarded=t=>t instanceof Element&&t.closest('input,button,a,pre,summary,iframe,select,textarea,[contenteditable="true"],[role="slider"],[data-widget],.dots');
+
+/* dots: one per slide, grouped by data-section */
+const nav=document.querySelector('.dots'),row=nav.querySelector('.row'),place=nav.querySelector('.place'),count=nav.querySelector('.count');
+let group=null,lastSection=null;const dots=[];
+slides.forEach((s,i)=>{
+  const sec=s.dataset.section||'';
+  if(sec!==lastSection||!group){group=document.createElement('span');group.className='group';group.dataset.section=sec;row.appendChild(group);lastSection=sec;}
+  const a=document.createElement('a');a.href='#'+i;a.setAttribute('aria-label',(i+1)+'. '+(s.querySelector('h1,h2')?.textContent.trim()||sec));group.appendChild(a);dots.push(a);
+});
+function renderNav(){
+  dots.forEach((a,i)=>{if(i===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  place.textContent=slides[current].dataset.section||'';
+  count.textContent=(current+1)+' / '+(LAST+1);
+}
+
+/* screen fit: scale the current slide so its content fills the stage (desktop only, on load/resize) */
+const FIT_MIN=.7,FIT_MAX=1.75,FIT_MOBILE=650;const fitted=new WeakMap();
+function fitSlide(slide){
+  const key=innerWidth+'x'+innerHeight;if(fitted.get(slide)===key)return;fitted.set(slide,key);
+  slide.style.removeProperty('--fit');
+  if(innerWidth<=FIT_MOBILE||matchMedia('print').matches)return;
+  const inner=slide.querySelector('.slide-inner');if(!inner)return;
+  const st=getComputedStyle(inner);
+  const avail=slide.clientHeight-parseFloat(st.paddingTop)-parseFloat(st.paddingBottom);
+  const extent=()=>{const r=[...inner.children].map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);return r.length?Math.max(...r.map(x=>x.bottom))-Math.min(...r.map(x=>x.top)):0;};
+  const overflows=()=>slide.scrollHeight>slide.clientHeight+1||slide.scrollWidth>slide.clientWidth+1||[...slide.querySelectorAll('h1 .w,h2 .w')].some(e=>e.getBoundingClientRect().right>slide.clientWidth+1);
+  const clamp=f=>Math.max(FIT_MIN,Math.min(FIT_MAX,f));
+  const h0=extent();if(!h0||!avail)return;
+  let fit=clamp(avail/h0);
+  for(let i=0;i<8;i++){slide.style.setProperty('--fit',fit.toFixed(3));const h=extent();if(!overflows()&&h<=avail+1)break;const next=clamp(fit*Math.min(.96,avail/h));if(next>=fit)break;fit=next;}
+  slide.dataset.fit=fit.toFixed(3);
+}
+addEventListener('resize',()=>fitSlide(slides[current]));
+
+function stepsOf(i){return +slides[i].dataset.steps||1;}
+function show(index,writeHash,step){
+  current=Math.max(0,Math.min(LAST,index));
+  slides.forEach((s,i)=>{s.hidden=i!==current;if(i===current)s.scrollTop=0;});
+  if(slides[current].dataset.steps)slides[current].dataset.step=step||1;
+  fitSlide(slides[current]);renderNav();
+  dispatchEvent(new CustomEvent('deck:change',{detail:{index:current,id:slides[current].dataset.id||''}}));
+  if(writeHash&&location.hash!=='#'+current)history.replaceState(null,'','#'+current);
+}
+function next(){const s=slides[current];if(s.dataset.steps&&+s.dataset.step<stepsOf(current)){s.dataset.step=+s.dataset.step+1;return;}if(current<LAST)show(current+1,true);}
+function prev(){const s=slides[current];if(s.dataset.steps&&+s.dataset.step>1){s.dataset.step=+s.dataset.step-1;return;}if(current>0)show(current-1,true,stepsOf(current-1));}
+const hashIndex=()=>{const h=decodeURIComponent(location.hash.slice(1));if(/^\d+$/.test(h)&&+h<=LAST)return +h;if(h in idIndex)return idIndex[h];return 0;};
+addEventListener('hashchange',()=>show(hashIndex(),false));
+document.querySelector('.edge.prev').addEventListener('click',prev);
+document.querySelector('.edge.next').addEventListener('click',next);
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const h=decodeURIComponent(a.getAttribute('href').slice(1));if(/^\d+$/.test(h)||h in idIndex){e.preventDefault();show(/^\d+$/.test(h)?+h:idIndex[h],true);}});
+addEventListener('keydown',e=>{
+  if(e.defaultPrevented||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(guarded(e.target)&&!e.target.closest('.dots'))return;
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next();}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev();}
+  else if(e.key==='Home'){e.preventDefault();show(0,true);}
+  else if(e.key==='End'){e.preventDefault();show(LAST,true);}
+});
+let touch=null;
+addEventListener('touchstart',e=>{if(e.touches.length!==1||guarded(e.target)){touch=null;return;}touch={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+addEventListener('touchcancel',()=>{touch=null;},{passive:true});
+addEventListener('touchend',e=>{if(!touch||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;touch=null;if(Math.abs(dx)>52&&Math.abs(dx)>Math.abs(dy)*1.25)(dx<0?next:prev)();},{passive:true});
+show(hashIndex(),false);
+/* Widgets: listen to 'deck:change' to start/stop animations, e.g.
+   addEventListener('deck:change',e=>{ if(e.detail.id==='widget') start(); else stop(); }); */
+</script>
+</body>
+</html>

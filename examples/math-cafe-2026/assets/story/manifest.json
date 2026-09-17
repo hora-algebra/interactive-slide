@@ -1,0 +1,31 @@
+{
+  "verified_at": "2026-09-10",
+  "files": [
+    {
+      "file": "galois.jpg",
+      "bytes": 217392,
+      "sha256": "4166cef12af4f1d0d37ff2a34140306b7fee81e468f5ba58f14ce6cc0bb2af7c"
+    },
+    {
+      "file": "grothendieck.jpg",
+      "bytes": 14417,
+      "sha256": "9be130d9a00a5e8d52ef8821cdade34114e6a654908faa8b2e7b90fe377572f2"
+    },
+    {
+      "file": "hands.jpg",
+      "bytes": 1177175,
+      "sha256": "f79a6e5a032871cc3ee75cc20f34c439d9233f265fd1e17fac09e7585bd5fe28"
+    },
+    {
+      "file": "robot-poster.jpg",
+      "bytes": 131911,
+      "sha256": "8b203d265782b1c1c20058934bd6555a4026e0d1e46c54d9fd9bb7d8c5f588a8"
+    },
+    {
+      "file": "robot.mp4",
+      "bytes": 1572899,
+      "sha256": "a2116fedbc3e134d0e4dca10ac59592c5c52b3204dcd618bb56c7c8f27125bce"
+    }
+  ],
+  "note": "navier-stokes-figure.png (a figure quoted from a third-party paper) is not redistributed in this example."
+}

@@ -1,0 +1,17 @@
+{
+  "name": "interactive-slide",
+  "owner": {
+    "name": "Ryuya Hora",
+    "url": "https://github.com/hora-algebra"
+  },
+  "description": "Turn a finished talk (Beamer, PDF, or outline) into a single-file interactive HTML slide deck.",
+  "plugins": [
+    {
+      "name": "interactive-slide",
+      "source": "./plugins/interactive-slide",
+      "description": "Single-file interactive HTML slides for talks: two semantic accent colors, playable figures, screen-fit layout, offline, mobile-friendly.",
+      "category": "Productivity",
+      "tags": ["slides", "presentation", "html", "mathematics", "beamer", "interactive"]
+    }
+  ]
+}

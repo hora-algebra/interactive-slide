@@ -1,0 +1,12 @@
+{
+  "name": "interactive-slide",
+  "version": "0.1.0",
+  "description": "Turn a finished talk into a single-file interactive HTML slide deck with two semantic accent colors and playable figures.",
+  "interface": {
+    "displayName": "Interactive Slide"
+  },
+  "skills": {
+    "path": "./skills"
+  },
+  "license": "MIT"
+}
