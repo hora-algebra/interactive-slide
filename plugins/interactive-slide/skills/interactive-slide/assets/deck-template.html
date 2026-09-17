@@ -180,8 +180,14 @@ function fitSlide(slide){
   const overflows=()=>slide.scrollHeight>slide.clientHeight+1||slide.scrollWidth>slide.clientWidth+1||[...slide.querySelectorAll('h1 .w,h2 .w')].some(e=>e.getBoundingClientRect().right>slide.clientWidth+1);
   const clamp=f=>Math.max(FIT_MIN,Math.min(FIT_MAX,f));
   const h0=extent();if(!h0||!avail)return;
-  let fit=clamp(avail/h0);
-  for(let i=0;i<8;i++){slide.style.setProperty('--fit',fit.toFixed(3));const h=extent();if(!overflows()&&h<=avail+1)break;const next=clamp(fit*Math.min(.96,avail/h));if(next>=fit)break;fit=next;}
+  /* fixed-point search: shrink while overflowing, grow while there is slack (layouts reflow, so do both) */
+  let fit=clamp(avail/h0),best=null;
+  for(let i=0;i<10;i++){
+    slide.style.setProperty('--fit',fit.toFixed(3));const h=extent();
+    if(!overflows()&&h<=avail+1){best=fit;if(h>=avail*.9||fit>=FIT_MAX)break;const grown=clamp(fit*Math.min(1.1,avail/h));if(grown<=fit+.005)break;fit=grown;continue;}
+    const next=clamp(fit*Math.min(.96,avail/Math.max(h,1)));if(next>=fit)break;fit=next;
+  }
+  if(best!==null&&(overflows()||extent()>avail+1)){fit=best;slide.style.setProperty('--fit',fit.toFixed(3));}
   slide.dataset.fit=fit.toFixed(3);
 }
 addEventListener('resize',()=>fitSlide(slides[current]));
