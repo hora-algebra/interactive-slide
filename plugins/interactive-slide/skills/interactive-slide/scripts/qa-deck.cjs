@@ -11,6 +11,9 @@
 //   overflow-y  desktop slides fit without scrolling (mobile may scroll inside the slide)
 //   fit         desktop content uses ≥60% of the height and ≥70% of the width (see references/layout-and-navigation.md)
 //   overlap     figure text does not collide with lines/fills/labels (svg-label-overlap.cjs)
+//   nav-stable  the dot row of the top navigation stays at the same place on every slide
+//               (it must not move when the section name or the page number changes)
+//   nav-clash   the dot row does not overlap the section name or the page count, and stays on screen
 // and once per run: keyboard / hash / edge-click navigation works. Exit 1 on any failure.
 const {OVERLAP_FN}=require('./svg-label-overlap.cjs');
 const fs=require('fs'),path=require('path');
@@ -38,7 +41,7 @@ const VIEWPORTS=[
   await page.route('**/*',r=>{const u=new URL(r.request().url());if(u.origin!==url.origin){external.push(u.href);return r.abort();}return r.continue();});
   await page.goto(url.href,{waitUntil:'networkidle'});
   const total=await page.locator('.slide[data-slide]').count();
-  const per=[];
+  const per=[];let nav0=null;
   for(let i=0;i<total;i++){
    await page.evaluate(n=>{location.hash='#'+n;},i);
    await page.waitForTimeout(120);
@@ -47,7 +50,11 @@ const VIEWPORTS=[
     const inner=s.querySelector('.slide-inner')||s;
     const boxes=[...inner.children].map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);
     const usage=boxes.length?{h:(Math.max(...boxes.map(r=>r.bottom))-Math.min(...boxes.map(r=>r.top)))/innerHeight,w:(Math.max(...boxes.map(r=>r.right))-Math.min(...boxes.map(r=>r.left)))/innerWidth}:{h:0,w:0};
-    return {index:+s.dataset.slide,id:s.dataset.id||'',fit:s.dataset.fit||'',sw:s.scrollWidth,cw:s.clientWidth,sh:s.scrollHeight,ch:s.clientHeight,usage};
+    const row=document.querySelector('.dots .row');const nr=row?row.getBoundingClientRect():null;
+    // the dot row must not run into the section name or the page count (nor leave the screen)
+    const hit=(r,e)=>{const q=e&&e.offsetParent?e.getBoundingClientRect():null;return q&&q.width>0&&r.left<q.right-.5&&q.left<r.right-.5;};
+    const clash=nr?['.dots .place','.dots .count'].filter(sel=>hit(nr,document.querySelector(sel))).concat(nr.left<0||nr.right>innerWidth?['viewport']:[]):[];
+    return {index:+s.dataset.slide,id:s.dataset.id||'',fit:s.dataset.fit||'',sw:s.scrollWidth,cw:s.clientWidth,sh:s.scrollHeight,ch:s.clientHeight,usage,nav:nr?[nr.left,nr.top,nr.width].map(v=>+v.toFixed(1)):null,clash};
    });
    if(!m){fail(vp.name,i,'visible','no visible slide');continue;}
    const overlaps=await page.evaluate(OVERLAP_FN);
@@ -57,6 +64,8 @@ const VIEWPORTS=[
    if(vp.fit&&rec.overflowY)fail(vp.name,i,'overflow-y',`${m.sh}>${m.ch}`);
    if(vp.fit&&(m.usage.h<.6||m.usage.w<.7))fail(vp.name,i,'fit',JSON.stringify(rec.usage));
    if(overlaps.length)fail(vp.name,i,'overlap',JSON.stringify(overlaps.slice(0,3)));
+   if(m.clash&&m.clash.length)fail(vp.name,i,'nav-clash',`dot row overlaps ${m.clash.join(', ')}`);
+   if(m.nav){if(!nav0)nav0=m.nav;else if(m.nav.some((v,k)=>Math.abs(v-nav0[k])>0.5))fail(vp.name,i,'nav-stable',`dot row at ${m.nav} (slide 0: ${nav0})`);}
    if(SHOTS){fs.mkdirSync(SHOTS,{recursive:true});await page.screenshot({path:path.join(SHOTS,`${vp.name}-${String(i).padStart(2,'0')}.png`)});}
   }
   if(errors.length)fail(vp.name,'*','errors',errors.slice(0,3).join(' | '));

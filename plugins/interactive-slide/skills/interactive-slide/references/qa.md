@@ -16,6 +16,8 @@ Per slide and viewport (375×812, 1440×900, 2000×1000, 3440×1440, 1440×900 d
 - no horizontal overflow; no vertical overflow on desktop sizes
 - content uses ≥ 60% of the height and ≥ 70% of the width on desktop sizes (see layout-and-navigation.md; if one slide fails, fix the shared sizes, not that slide)
 - no figure label touching a line, a fill or another label (`svg-label-overlap.cjs`)
+- the dot row of the top navigation is at the same place on every slide (`nav-stable`)
+- the dot row does not overlap the section name or the page count and stays on screen (`nav-clash`)
 - keyboard, hash deep link and edge click navigation work
 
 Needs Playwright (`npm i -D playwright && npx playwright install chromium`, or `PLAYWRIGHT_MODULE=/path/to/node_modules/playwright`).

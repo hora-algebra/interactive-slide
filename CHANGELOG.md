@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-09-26
+
+- template: the top navigation never moves. The bar is a three-column grid (section | dots | `n / N`); on phones it is two columns and the page count has a fixed width. `qa-deck.cjs` checks this (`nav-stable`, `nav-clash`)
+- template: inline math sits on the text baseline (MathJax's own `vertical-align` is no longer overridden by flex centring)
+- template: size rules for `.math` and `.fig` apply only to the outer `<svg>`, so MathJax's nested SVGs (stretchy braces, figure labels) keep their size
+
 ## 0.1.0 — 2026-09-18
 
 First public version. Extracted from the private skills used to build the September 2026 talks
