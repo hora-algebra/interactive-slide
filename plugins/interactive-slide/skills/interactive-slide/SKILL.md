@@ -4,7 +4,7 @@ description: Turn a finished talk (Beamer/LaTeX source, PDF slides, or a written
 license: MIT
 metadata:
   author: Ryuya Hora (hora-algebra)
-  version: "0.1.0"
+  version: "0.1.1"
   homepage: https://github.com/hora-algebra/interactive-slide
 ---
 

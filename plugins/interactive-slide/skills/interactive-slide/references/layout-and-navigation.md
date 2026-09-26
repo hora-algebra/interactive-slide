@@ -34,6 +34,7 @@ Anything the audience clicks must not move. Reserve space for the largest state 
 ## Navigation: minimal chrome, position always visible
 
 - A row of small dots at the top, one per slide, grouped by section, with the current section name on the left and `n / N` on the right. That is the whole UI. Sidebars, bottom toolbars and progress bars compete with the slide.
+- The navigation never moves. The bar is a three-column grid (section name | dots | `n / N`) with the dots in the centre column, so a longer section name or a two-digit page number cannot shift the dots. A flex row with `flex:1` does shift them at every section change; `qa-deck.cjs` fails such a deck (`nav-stable`). On phones the section name is hidden and the bar becomes two columns (dots | `n / N`); the count gets a fixed width from the longest label, so the dots stay put there too and never run under the count (`nav-clash`).
 - Invisible edge zones (left/right 3% of the screen) advance on click; ← → Space PageUp/Down Home/End on the keyboard; horizontal swipe on touch; `#12` and `#some-id` deep links (the hash is updated as you move, so a URL copied mid-talk opens that slide).
 - Keys and swipes are ignored inside `input, button, a, select, textarea, [data-widget]`, so a widget can use arrow keys and drags without changing the slide.
 - No step-by-step reveals by default. A `\pause` in Beamer is usually a speaker's crutch; the HTML slide shows everything and the speaker points. Use `data-steps="2"` only for an explicit question → answer beat.
