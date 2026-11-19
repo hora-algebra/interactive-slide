@@ -1,10 +1,10 @@
 ---
 name: interactive-slide
-description: Turn a finished talk (Beamer/LaTeX source, PDF slides, or a written outline) into a single-file interactive HTML slide deck with two semantic accent colors mapped to the talk's central dichotomy, playable SVG figures, build-time math, a screen-filling layout, and phone/offline support. Use whenever someone wants HTML or web slides, interactive or playable slides, a Beamer/PowerPoint/PDF deck converted to HTML, a widget or interactive figure added to a talk, or an existing HTML deck's layout, colors, navigation or QA fixed, even if they never say "interactive".
+description: Turn a finished talk (Beamer/LaTeX source, PDF slides, or a written outline) into a single-file interactive HTML slide deck with two semantic accent colors mapped to the talk's central dichotomy, playable SVG figures, build-time math, a screen-filling layout, and phone/offline support. Use for HTML slide conversions (including PowerPoint exports), playable figures, and layout, color, navigation, or QA fixes in existing web slides.
 license: MIT
 metadata:
   author: Ryuya Hora (hora-algebra)
-  version: "0.1.1"
+  version: "0.1.2"
   homepage: https://github.com/hora-algebra/interactive-slide
 ---
 
@@ -22,7 +22,7 @@ Three ideas do most of the work, and the rest of this skill exists to protect th
 
 Read the reference file named at each step when you reach it; they are short and hold the details and the reasons.
 
-**0. Settle taste with the speaker before building.** Layout, colors, which figures become widgets, and where the deck will be published are decisions with several reasonable answers and a strong owner preference. Ask them in one short round (each with a recommended default), then do not ask again:
+**0. Reuse the speaker’s decisions.** Take the supplied outline, prior deck, and explicit preferences as the starting point. For a new deck or a redesign, ask once about any open design choices that would materially change the result, with a suggested default for each. For a small edit, use the existing deck’s conventions.
 - the two concepts and their colors (propose a pair that passes `scripts/cvd-check.py`);
 - which 2–4 figures become playable (see `references/interactions.md`);
 - what is cut for the room (definitions to speech, footnotes to nothing);
@@ -37,7 +37,7 @@ Read the reference file named at each step when you reach it; they are short and
 
 **4. Figures and widgets.** Inline SVG with `viewBox`, accent tokens, label halos. Widgets are vanilla JS in the same file; the default state is the complete static figure; nothing moves except what the user changes; presets and reset; `data-widget` on the root; stop on `deck:change`. `references/interactions.md`.
 
-**5. Build-time assets.** TeX → SVG with `scripts/tex2svg.mjs` (macros and `\color` names mapped to CSS variables). QR → inline SVG with `scripts/qr-svg.py`, only once the URL is final. Keep a build script; never hand-edit the built file. Layout sizes follow the stage unit table in `references/layout-and-navigation.md`.
+**5. Build-time assets.** TeX → SVG with `scripts/tex2svg.mjs` (macros and `\color` names mapped to CSS variables). QR → inline SVG with `scripts/qr-svg.py`, only once the URL is final. For decks with generated math or several widgets, follow the source layout in [Build](references/workflow-from-beamer.md#4-build) so content, interaction, and styling can be revised independently. Layout sizes follow the stage unit table in `references/layout-and-navigation.md`.
 
 **6. Verify on screens.** Serve the folder, run `scripts/qa-deck.cjs` (errors, offline, overflow, screen usage, label overlap, navigation at five viewports), look at the screenshots, and check every widget by hand. `references/qa.md` lists what counts as done and what to report.
 

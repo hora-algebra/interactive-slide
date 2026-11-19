@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 — 2026-11-19
+
+- Fix the Codex plugin manifest’s skill path.
+- Add a Japanese quickstart with a live example and a first request.
+- Reuse previous design decisions and document a reproducible source layout for single-file decks.
+
 ## 0.1.1 — 2026-09-26
 
 - template: the top navigation never moves. The bar is a three-column grid (section | dots | `n / N`); on phones it is two columns and the page count has a fixed width. `qa-deck.cjs` checks this (`nav-stable`, `nav-clash`)

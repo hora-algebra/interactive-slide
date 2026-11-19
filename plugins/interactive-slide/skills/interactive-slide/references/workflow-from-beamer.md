@@ -18,7 +18,7 @@ Before writing markup, agree on:
 - navigation extras: QR on the title, corner QR on every slide, section covers;
 - where the deck will live (a URL is needed before QR codes and before the "Slides" link on the event page).
 
-These are taste decisions with several reasonable answers; a one-line question each is cheaper than a rebuild.
+Use the speaker’s existing choices when available. Ask about unresolved choices together before a new build or redesign.
 
 ## 3. Map Beamer constructs
 
@@ -39,7 +39,23 @@ These are taste decisions with several reasonable answers; a one-line question e
 
 ## 4. Build
 
-- Keep a build script (Node or Python) that assembles `site/index.html` from the template, a content file and the rendered formulas. Never hand-edit the built file.
+Keep the template and editable sources outside the output directory. For example, a Node build can use this layout:
+
+```text
+build/
+  build.mjs     assemble the template, content, rendered math, CSS and JS
+  content.mjs   slide order, speaker text, TeX and figure markup
+  deck.css      shared styles and accent tokens
+  widgets.js    interaction state and rendering
+site/
+  index.html    generated deck to preview, share or publish
+```
+
+Run `node build/build.mjs` after editing the sources. The build should resolve
+its inputs relative to the script and inline the CSS, scripts and permitted
+media used by the slides. Open `site/index.html` from disk with the network
+disabled as a final check of the file people will receive.
+
 - Formulas: collect every TeX string, render once with `tex2svg.mjs --macros --colors`, inline the SVG.
 - Figures: one SVG per figure with a `viewBox`; labels via a small helper that adds halos; accents via tokens.
 - Widgets: vanilla JS in the same file; state in JS, rendering in SVG/DOM; initial render equals the static figure.
