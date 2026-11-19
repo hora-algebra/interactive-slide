@@ -2,7 +2,7 @@
 
 An [Agent Skill](https://agentskills.io) that turns a finished talk (Beamer/LaTeX, PDF slides, or an outline) into **one HTML file** the audience can hold in their hands: it fills any screen, works offline, and lets people play with the figures.
 
-日本語の説明は[下](#日本語)にあります。
+[Start here](START-HERE.md) · [Read the skill](plugins/interactive-slide/skills/interactive-slide/SKILL.md) · [日本語](#日本語)
 
 **Live examples** (real talks, unchanged apart from removing non-redistributable media):
 
@@ -84,4 +84,4 @@ skillが守らせること:
 5. **最小限のナビで現在地は常に見える**: 上部のドット（章ごとにまとめる）＋章名＋ `n / N`、キー・スワイプ・端クリック・直リンク。サイドバーや下部ツールバー、段階表示は既定で入れない。
 6. **完全自己完結の1ファイル**: CDN・Webフォントなし、数式はビルド時にSVG化、5つの画面サイズで機械検査。
 
-導入は上の Install の通り（Claude Code / Codex は plugin、その他のagentは `plugins/interactive-slide/skills/interactive-slide/` をコピー）。ライセンスはMIT。
+[導入手順と依頼例](START-HERE.md#日本語)を参照してください。ライセンスはMITです。
